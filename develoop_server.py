@@ -6,8 +6,8 @@ def home():
 	return render_template("index.html")
 
 #Login for user to be able to start a session on the site
-@app.route("/login_user", methods=["GET", "POST"])
-def login_user():
+@app.route("/api/login", methods=["GET", "POST"])
+def login_api():
 	if request.method == "POST":
 		email = request.form["email"]
 		password = request.form["password"]
@@ -17,15 +17,15 @@ def login_user():
 
 #Login page for user interaction
 @app.route("/login")
-def login_page():
+def login():
 	return render_template("login.html")
 
 #form to register a user
 @app.route("/register")
-def register_page():
+def register():
 	return render_template("register.html")
 
-@app.route("/register_user", methods=["POST"])
+@app.route("/api/register", methods=["POST"])
 def register_user():
 	if request.method == "POST":
 		email = request.form["email"]
@@ -34,5 +34,7 @@ def register_user():
 		#Here is also a good place to place email
 		#check to confirm
 		return "userToken"
+
+
 #Runs the app in dev mode
 app.run(host="0.0.0.0", debug=True)
