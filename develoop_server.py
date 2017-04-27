@@ -42,7 +42,7 @@ def login():
 #File upload functions
 #Check if the filename is a typical image filename
 def allowed_file(filename):
-	allowed_extensions = set(["pngg", "jpgg"])
+	allowed_extensions = set(["png", "jpg"])
 	if filename.split(".")[1].lower() in allowed_extensions:
 		return "." in filename
 	return False
@@ -59,28 +59,26 @@ def upload():
 #Upload images api
 @app.route("/api/upload", methods=["POST"])
 def upload_api():
-	#Get a list of uploaded images
-	error = False
-	uploaded_files = request.files.getlist("pictures[]")
-	for file in uploaded_files: #Iterate every file
-	    # Check if the file is one of the allowed types/extensions
-	    if file and allowed_file(file.filename):
-	        # Make the filename safe, remove unsupported chars
-	        filename = secure_filename(file.filename)
+	file = request.files["picture"]
+    # Check if the file is one of the allowed types/extensions
 
-	        #Remember the pictures extension
-	        file_ext = filename.split(".")[1]
+	if file and allowed_file(file.filename):
+		# Make the filename safe, remove unsupported chars
+	    filename = secure_filename(file.filename)
 
-	        #Save the file
-	        try:
-	        	file.save(os.path.join(app.config['UPLOAD_FOLDER'], random_name() + "." + file_ext))
-	        except:
-	        	error = "202"#Could not upload file
-	    else:
-	   		error = "201" #Not allowed
-	if not error:
-		return "100" #Uploaded file correctly
-	return error #Error message
+	    #Remember the pictures extension
+	    file_ext = filename.split(".")[1]
+
+	    #Save the file
+	    try:
+	    	new_filename = random_name() + "." + file_ext
+	    	file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
+	    except:
+	    	return "202"#Could not upload file
+	else:
+			return "201" #Not allowed
+
+	return "100" #Uploaded file correctly
 
 #Runs the app in dev mode
 app.run(host="0.0.0.0", debug=True)
