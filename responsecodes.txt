@@ -1,1 +1,7 @@
+#Inlogg
 101: Kunde inte logga in
+
+#Fil
+201: Filen accepteras inte
+202: Filen kunde inte laddas upp
+203: Ingen fil att ladda upp
