@@ -1,7 +1,15 @@
-#Inlogg
-101: Kunde inte logga in
+2XX: Successful
+	200: Successful
 
-#Fil
-201: Filen accepteras inte
-202: Filen kunde inte laddas upp
-203: Ingen fil att ladda upp
+4XX: Client error
+	400: Unknow client error
+	401: Bad login
+	402: Missing file
+	403: File not allowed
+	404: File extension not allowed
+	405: Missing arguments in call
+
+5XX: Server error
+	500: Unknow server error
+	501: Method not allowed
+	502: Unable to save file
