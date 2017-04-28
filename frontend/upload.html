@@ -4,9 +4,8 @@
 	<title>Ladda upp</title>
 </head>
 <body>
-<a href="/">Hem</a>
-<a href="/logout">Logga ut</a>
-<form action="/api/upload" method="POST" enctype="multipart/form-data">
+<a href="index.html">Hem</a>
+<form action="http://127.0.0.1:5000/api/upload" method="POST" enctype="multipart/form-data">
 	<input type="file" name="picture">
 	<input type="submit" value="Ladda upp">
 </form>
