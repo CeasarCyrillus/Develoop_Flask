@@ -4,15 +4,6 @@ from werkzeug.utils import secure_filename
 from random import *
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "images"
-@app.route("/")
-def home():
-	return render_template("index.html")
-
-#form to register a user
-@app.route("/register")
-def register():
-	return render_template("register.html")
-
 #register API
 @app.route("/api/register", methods=["POST"])
 def register_api():
@@ -34,11 +25,6 @@ def login_api():
 			return "userToken"#Return data from database, userToken
 	return "101" #Bad login
 
-#Login page for user interaction
-@app.route("/login")
-def login():
-	return render_template("login.html")
-
 #File upload functions
 #Check if the filename is a typical image filename
 def allowed_file(filename):
@@ -50,11 +36,6 @@ def allowed_file(filename):
 #generate random name for files	
 def random_name():
 	return ''.join(choice(["1", "2", "3", "A", "B"]) for _ in range(6))
-
-#Upload images page
-@app.route("/upload")
-def upload():
-	return render_template("upload.html")
 
 #Upload images api
 @app.route("/api/upload", methods=["POST"])
