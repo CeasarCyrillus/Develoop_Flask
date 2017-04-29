@@ -17,6 +17,7 @@ app.config['UPLOAD_FOLDER'] = "images"
 #	403:"File not allowed",
 #	404:"File extension not allowed",
 #	405:"Missing arguments in call",
+#	406:"Bad Login"
 #	500:"Unknown server error",
 #	501:"Method not allowed",
 #	502:"Unable to save file"
@@ -53,11 +54,11 @@ def login():
 		except:
 			#Could not get arguments in call
 			return r.status(405)
-			#Return data from database, session token
-			#This is development evn. rubbish
-			user_in_database = True #Testing purpuses
-			if user_in_database:
-				return r.status(200, "userToken")
+		#Return data from database, session token
+		#This is development evn. rubbish
+		user_in_database = True #Testing purpuses
+		if user_in_database:
+			return r.status(200, "userToken")
 		else:
 			#Could not login user
 			return r.status(401)
@@ -101,7 +102,7 @@ def upload():
 		#File is missing
 		return r.status(402)
 #Download the users images
-@app.route("/api/images", methods="GET")
+@app.route("/api/images", methods=["GET"])
 def get_images():
 	r = Response()
 	if request.form["token"] != "userToken":

@@ -1,4 +1,6 @@
 #Response object
+import json
+import os
 class Response():
 	def __init__(self):
 		self.code = 200
@@ -12,6 +14,7 @@ class Response():
 		403:"File not allowed",
 		404:"File extension not allowed",
 		405:"Missing arguments in call",
+		406:"Bad session token",
 		500:"Unknown server error",
 		501:"Method not allowed",
 		502:"Unable to save file"
