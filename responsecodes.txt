@@ -8,6 +8,8 @@
 	403: File not allowed
 	404: File extension not allowed
 	405: Missing arguments in call
+	411: Bad accessToken
+	406: Missing accessToken
 
 5XX: Server error
 	500: Unknow server error

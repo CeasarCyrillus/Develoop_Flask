@@ -15,6 +15,8 @@ class Response():
 		404:"File extension not allowed",
 		405:"Missing arguments in call",
 		406:"Bad session token",
+		411:"Bad accessToken",
+		406:"Missing accessToken",
 		500:"Unknown server error",
 		501:"Method not allowed",
 		502:"Unable to save file"
@@ -27,6 +29,9 @@ class Response():
 		else:
 			content = None
 		return json.dumps([{"response_code":self.code, "msg":self.msg, "content":self.content}], indent=4)
+
+	def status_codes(self):
+		return json.dumps([self.response_codes])
 
 #Check if the filename is a typical image filename
 def allowed_file(filename):
@@ -58,3 +63,10 @@ def create_dir(file_path):
 #Get images
 def image_urls(token):
 	os.listdir(token) # returns list
+
+#Check accessToken
+def access(token):
+	#This function checks if the user is logged in
+	#Should fetch the tokens from a DB
+	if token == str(token) and len(token) > 0:
+		return token == "userToken"

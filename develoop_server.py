@@ -8,21 +8,6 @@ from python_functions import *
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "images"
 
-#Response codes
-#response_codes = {
-#	200:"OK",
-#	400:"Unknown client error",
-#	401:"Bad login",
-#	402:"Missing file",
-#	403:"File not allowed",
-#	404:"File extension not allowed",
-#	405:"Missing arguments in call",
-#	406:"Bad Login"
-#	500:"Unknown server error",
-#	501:"Method not allowed",
-#	502:"Unable to save file"
-#	}
-
 #register API
 @app.route("/api/register", methods=["POST"])
 def register():
@@ -32,9 +17,11 @@ def register():
 		try:
 			email = request.form["email"]
 			password = request.form["password"]
+
+			#Create token in DB with user
 			token = "userToken"
 			create_dir("/images/"+token)
-			return r.status(200, token)
+			return r.status(200)
 		except:
 			#Could not get arguments
 			return r.status(405)
@@ -54,9 +41,12 @@ def login():
 		except:
 			#Could not get arguments in call
 			return r.status(405)
+		
 		#Return data from database, session token
 		#This is development evn. rubbish
 		user_in_database = True #Testing purpuses
+		
+		#userToken should be fetched from a DB
 		if user_in_database:
 			return r.status(200, "userToken")
 		else:
@@ -69,16 +59,27 @@ def login():
 #Upload images api
 @app.route("/api/upload", methods=["PUT"])
 def upload():
+	#Prepere response
 	r = Response()
+
+	#Try to fetch token and validate it
+	try:
+		token = request.form["token"]
+		if not access(token):
+			#Accesstoken was denied, or is missing
+			return r.status(411)
+	except:
+		#Accesstoken is missing in call
+		return r.status(406)
+	
+	#Try to get the file part
 	try:
 		file = request.files["picture"]
-		token = request.form["token"]
-		if token != "userToken":
-			#Bad login
-			return r.status(401)
 	except:
 		#Missing file in call
 		return r.status(402)
+	
+	#Check if file var is empty, and the file exist
 	if file:
 		if allowed_file(file.filename):
 			# Make the filename safe,
@@ -101,23 +102,12 @@ def upload():
 	else:
 		#File is missing
 		return r.status(402)
-
-#Download the users images
-@app.route("/api/images", methods=["GET"])
-def get_images():
-	r = Response()
-	if request.form["token"] != "userToken":
-		#Bad login
-		return r.status(401)
-	if token == "userToken":
-		r.content = image_urls(token)
-		return r.status()
-		
 #Show the response-codes used under the api
 @app.route("/api/codes", methods=["GET"])
 def get_codes():
-	return json.dumps([response_codes])
-
+	r = Response()
+	#No status codes needed
+	return r.status_codes()
 
 #Runs the app in dev mode
 app.run(host="0.0.0.0", debug=True)
