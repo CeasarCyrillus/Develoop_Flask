@@ -44,8 +44,8 @@ def login():
 		
 		#Return data from database, session token
 		#This is development evn. rubbish
-		user_in_database = True #Testing purpuses
-		
+		user_in_database = email == "root" and password == "root"; #Testing purpuses
+		print(user_in_database);
 		#userToken should be fetched from a DB
 		if user_in_database:
 			return r.status(200, "userToken")
@@ -57,7 +57,7 @@ def login():
 		return r.status(501)
 
 #Upload images api
-@app.route("/api/upload", methods=["PUT"])
+@app.route("/api/upload", methods=["POST"])
 def upload():
 	#Prepere response
 	r = Response()

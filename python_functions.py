@@ -28,10 +28,10 @@ class Response():
 			self.content = content
 		else:
 			content = None
-		return json.dumps([{"response_code":self.code, "msg":self.msg, "content":self.content}], indent=4)
+		return json.dumps({"response_code":self.code, "msg":self.msg, "content":self.content}, indent=4)
 
 	def status_codes(self):
-		return json.dumps([self.response_codes])
+		return json.dumps(self.response_codes)
 
 #Check if the filename is a typical image filename
 def allowed_file(filename):

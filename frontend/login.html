@@ -7,10 +7,11 @@
 <body>
 <h1>Logga in</h1>
 <a href="index.html">Hem</a>
-<form action="http://127.0.0.1:5000/api/login" method="POST">
+<form id="loginForm" onsubmit="login(); return false;">
 	<input type="text" name="email">
 	<input type="password" name="password">
 	<input type="submit" value="Logga in">
 </form>
+<script type="text/javascript" src="js/javascript.js"></script>
 </body>
 </html>
