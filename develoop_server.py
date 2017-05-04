@@ -19,9 +19,8 @@ def register():
 			password = request.form["password"]
 
 			#Create token in DB with user
-			token = "userToken"
-			create_dir("/images/"+token)
-			return r.status(200)
+			token = register_user(email, password)
+			return r.status(200, token)
 		except:
 			#Could not get arguments
 			return r.status(405)
@@ -42,13 +41,11 @@ def login():
 			#Could not get arguments in call
 			return r.status(405)
 		
-		#Return data from database, session token
-		#This is development evn. rubbish
-		user_in_database = email == "root" and password == "root"; #Testing purpuses
-		print(user_in_database);
+		#Fetch token from DB
+		user = User.select().where(User.email == email and User.password == password)
 		#userToken should be fetched from a DB
-		if user_in_database:
-			return r.status(200, "userToken")
+		if user:
+			return r.status(200, user[0].token)
 		else:
 			#Could not login user
 			return r.status(401)
@@ -65,8 +62,8 @@ def upload():
 	#Try to fetch token and validate it
 	try:
 		token = request.form["token"]
-		if not access(token):
-			#Accesstoken was denied, or is missing
+		if not valid_token(token):
+			#Accesstoken was denied
 			return r.status(411)
 	except:
 		#Accesstoken is missing in call
@@ -102,6 +99,7 @@ def upload():
 	else:
 		#File is missing
 		return r.status(402)
+
 #Show the response-codes used under the api
 @app.route("/api/codes", methods=["GET"])
 def get_codes():

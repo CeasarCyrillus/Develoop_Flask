@@ -1,6 +1,8 @@
 #Response object
 import json
 import os
+from random import *
+from db_models import db, User
 class Response():
 	def __init__(self):
 		self.code = 200
@@ -64,9 +66,34 @@ def create_dir(file_path):
 def image_urls(token):
 	os.listdir(token) # returns list
 
+def new_token():
+	return ''.join(choice('0123456789ABCDEF') for i in range(3))
+
+#DB Functions
+def init_db():
+	User.drop_table()
+	db.create_tables([User])
+	db.connect()
+
+def register_user(email, password):
+	token = new_token()
+	User.create(email=email, password=password, token=token)
+	return token
+
 #Check accessToken
-def access(token):
+def valid_token(token):
 	#This function checks if the user is logged in
 	#Should fetch the tokens from a DB
-	if token == str(token) and len(token) > 0:
-		return token == "userToken"
+	try:
+		db_user = User.get(User.token == token)
+	
+	#Bad token
+	except:
+		return False
+	return db_user.token == token
+
+init_db() #Only first time
+#register_user("admin1", "admin")
+#pas = User.select().where(User.email == "admin")
+#print(pas[0].token)
+#print(valid_token(""))
