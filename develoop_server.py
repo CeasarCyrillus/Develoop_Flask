@@ -101,6 +101,7 @@ def upload():
 	else:
 		#File is missing
 		return r.status(402)
+
 #Download the users images
 @app.route("/api/images", methods=["GET"])
 def get_images():
@@ -111,6 +112,7 @@ def get_images():
 	if token == "userToken":
 		r.content = image_urls(token)
 		return r.status()
+		
 #Show the response-codes used under the api
 @app.route("/api/codes", methods=["GET"])
 def get_codes():
