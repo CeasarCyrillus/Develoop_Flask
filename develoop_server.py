@@ -41,7 +41,7 @@ def login():
 			#Could not get arguments in call
 			return r.status(405)
 		
-		#Fetch token from DB
+		#Fetch user from DB
 		user = User.select().where(User.email == email and User.password == password)
 		#userToken should be fetched from a DB
 		if user:
@@ -53,6 +53,22 @@ def login():
 		#No other method than post is allowed
 		return r.status(501)
 
+@app.route("/api/logout", methods=["POST"])
+def logout():
+	r = Response();
+	#Try to fetch token and delete it
+	try:
+		token = request.form["token"]
+		if not valid_token(token):
+			#Accesstoken is not valid
+			return r.status(411)
+		else:
+			db_user = User.get(User.token == token)
+			db_user.delete_instance();
+			return r.status();
+	except:
+		#Accesstoken is missing in call
+		return r.status(406)
 #Upload images api
 @app.route("/api/upload", methods=["POST"])
 def upload():
@@ -108,4 +124,6 @@ def get_codes():
 	return r.status_codes()
 
 #Runs the app in dev mode
+init_db() #Only first time
+register_user("admin", "admin")
 app.run(host="0.0.0.0", debug=True)

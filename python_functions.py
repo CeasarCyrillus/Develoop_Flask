@@ -91,9 +91,3 @@ def valid_token(token):
 	except:
 		return False
 	return db_user.token == token
-
-init_db() #Only first time
-#register_user("admin1", "admin")
-#pas = User.select().where(User.email == "admin")
-#print(pas[0].token)
-#print(valid_token(""))

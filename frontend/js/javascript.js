@@ -66,10 +66,64 @@ function Request()
 }
 
 //Copies the form at login.html and sends it
+//Also handles the token
 function login()
 {
 	request = new Request();
 	formId = "loginForm";
 	request.payload.init(formId);
 	request.post("login");
+	if(request.response.response_code == 200)
+	{
+		saveToken(request.response.content);
+
+		//Load home, no token needed
+		window.location.href = "index.html";
+	}
+}
+
+function logout()
+{
+	request = new Request();
+	request.payload.add("token", token())
+	request.post("logout");
+	if(request.response.response_code == 200)
+	{
+		localStorage.token = 0;
+		//Load login, no token needed
+		window.location.href = "login.html";
+	}
+}
+
+
+function register()
+{
+	request = new Request();
+	formId = "registerForm";
+	request.payload.init(formId);
+	request.post("register");
+	if(request.response.response_code == 200)
+	{
+		saveToken(request.response.content);
+
+		//Redirect to login page
+		window.location.href = "login.html";
+	}
+}
+
+function token()
+{
+	return localStorage.token;
+}
+
+function saveToken(token)
+{
+	localStorage.token = token;
+}
+
+function upload()
+{
+	request = new Request();
+	request.payload.add("token", token());
+	request.post("upload");
 }
