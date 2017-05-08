@@ -17,13 +17,16 @@ def register():
 		try:
 			email = request.form["email"]
 			password = request.form["password"]
-
-			#Create token in DB with user
-			token = register_user(email, password)
-			return r.status(200, token)
 		except:
 			#Could not get arguments
 			return r.status(405)
+		#Check if email already exist
+		if not unique_email(email):
+			return r.status(407)
+
+		#Create token in DB with user
+		token = register_user(email, password)
+		return r.status(200, token)
 	else:
 		#Method other than post not allowed
 		return r.status(501)
@@ -37,15 +40,18 @@ def login():
 		try:
 			email = request.form["email"]
 			password = request.form["password"]
+			token = request.form["token"]
 		except:
-			#Could not get arguments in call
 			return r.status(405)
 		
-		#Fetch user from DB
-		user = User.select().where(User.email == email and User.password == password)
+		#Fetch user from DB by email and password
+		email_user = User.select().where(User.email == email and User.password == password)
+		token_user = User.select().where(User.token == token)
 		#userToken should be fetched from a DB
-		if user:
-			return r.status(200, user[0].token)
+		if email_user:
+			return r.status(200, email_user[0].token)
+		elif token_user:
+			return r.status(200, token_user[0].token)
 		else:
 			#Could not login user
 			return r.status(401)
@@ -69,6 +75,7 @@ def logout():
 	except:
 		#Accesstoken is missing in call
 		return r.status(406)
+
 #Upload images api
 @app.route("/api/upload", methods=["POST"])
 def upload():

@@ -3,6 +3,7 @@ import json
 import os
 from random import *
 from db_models import db, User
+import string
 class Response():
 	def __init__(self):
 		self.code = 200
@@ -19,6 +20,7 @@ class Response():
 		406:"Bad session token",
 		411:"Bad accessToken",
 		406:"Missing accessToken",
+		407:"User not unique",
 		500:"Unknown server error",
 		501:"Method not allowed",
 		502:"Unable to save file"
@@ -42,10 +44,6 @@ def allowed_file(filename):
 		return "." in filename
 	return False
 
-#generate random name for files	
-def random_name():
-	return ''.join(choice(["1", "2", "3", "A", "B"]) for _ in range(6))
-
 #Check wether the user already uploaded that image
 def unique_image(image_url):
 	image = open(image_url,"rb").read()
@@ -67,7 +65,12 @@ def image_urls(token):
 	os.listdir(token) # returns list
 
 def new_token():
-	return ''.join(choice('0123456789ABCDEF') for i in range(3))
+	chars = string.digits + string.ascii_uppercase
+	length = 4
+	token = ""
+	for i in range(length):
+		token += (choice(chars))
+	return token
 
 #DB Functions
 def init_db():
@@ -80,13 +83,20 @@ def register_user(email, password):
 	User.create(email=email, password=password, token=token)
 	return token
 
+def unique_email(email):
+	try:
+		db_user = User.get(User.email == email)
+	#Could not find any user
+	except:
+		return True
+	return db_user.email != email
+
 #Check accessToken
 def valid_token(token):
 	#This function checks if the user is logged in
 	#Should fetch the tokens from a DB
 	try:
 		db_user = User.get(User.token == token)
-	
 	#Bad token
 	except:
 		return False

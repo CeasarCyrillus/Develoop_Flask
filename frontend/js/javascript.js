@@ -72,6 +72,7 @@ function login()
 	request = new Request();
 	formId = "loginForm";
 	request.payload.init(formId);
+	request.payload.add("token", "");
 	request.post("login");
 	if(request.response.response_code == 200)
 	{
@@ -111,6 +112,26 @@ function register()
 	}
 }
 
+function autoLogin()
+{
+	token = localStorage.token;
+	if(token != null)
+	{
+		if(token.length == 4)
+		{
+			request = new Request();
+			request.payload.add("token", token);
+			request.payload.add("email", "-");
+			request.payload.add("password", "-");
+			request.post("login");
+			if(request.response.response_code == 200)
+			{
+				//Redirect to home page
+				window.location.href = "index.html";
+			}
+		}
+	}
+}
 function token()
 {
 	return localStorage.token;
